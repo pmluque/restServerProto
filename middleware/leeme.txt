@@ -1,0 +1,2 @@
+El propósito es recoger funciones adicionales que utilizo en mis controladores.
+Es igual que un controlador, tiene req, res y un next

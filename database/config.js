@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const dbConnection = async() => {
     // mongodb+srv://scmongo:<password>@cluster0.jqetk.mongodb.net/test
-    // mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
+    // mongoose.connect('mongodb://localhost:27017/hospital', {useNewUrlParser: true, useUnifiedTopology: true});
     try {
         await mongoose.connect(process.env.DB_CONNECT, {
             useNewUrlParser: true,
