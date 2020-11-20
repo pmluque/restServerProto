@@ -9,24 +9,53 @@ const User = require('../models/user.model');
 // 13.1 - devolver token 
 const { generateJWT } = require('../helpers/jwt.helper');
 
-const getUsers = async(req, res) => {
+const getUsers = async(req, res = response) => {
 
-        // const users = await User.find();
-        const users = await User.find({}, 'name email role google'); // limitar campos (*) el id siempre sale
+    try {
+        // 15.7 - PAGINACIÓN: recoger parámetros de la url from/to
+        // http://localhost:3000/api/users?from=5&to=10
+        const from = Number(req.query.from) | 0;
+        console.log('user.controller.getUsers() from=', from);
+
+        // lanzar 2 procesos de forma simultánea > Promise.all([ejecuta todas estas promesas])
+        /*
+         const users = await User.find({}, 'name email role google')
+            .skip(from)
+            .limit(5);
+         const total = await User.count();
+        */
+        const [users, total] = await Promise.all([
+            User.find({}, 'name email role google img')
+            .skip(from)
+            .limit(5), User.countDocuments()
+        ]);
 
         res.status(200).json({
             ok: true,
-            msg: 'Resultado de la búsqueda',
+            msg: 'Resultado de la búsqueda de usuarios',
             data: {
                 users,
-                uid: req.uid
+                uid: req.uid,
+                total
             }
         });
+
+    } catch (error) {
+
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado al buscar usuarios',
+            err: error
+        });
     }
-    /**
-     *
-     *  decir igual a response ayuda a decirle a node que por defecto es un res 
-     */
+
+
+}
+
+/**
+ *
+ *  decir igual a response ayuda a decirle a node que por defecto es un res 
+ */
 const createUser = async(req, res = response) => {
 
     // const body= req.body; -> mejor desestructurado

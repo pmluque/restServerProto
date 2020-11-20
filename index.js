@@ -1,6 +1,6 @@
 require('dotenv').config(); // 4.2 - Cargar propiedades de configuración
 const express = require('express'); // 1
-const bodyParser = require('body-parser'); // 8.4
+// const bodyParser = require('body-parser'); // 8.4  || esto produjo errores en los métodos !!!! -- regreso a express
 const cors = require('cors'); // 5.1
 const { dbConnection } = require('./database/config'); // 3.5 | Las llaves es por la desestructuración por si me quiero traer más de un objeto del fichero
 
@@ -21,6 +21,13 @@ dbConnection();
 app.use('/api/users', require('./routes/user.routes'));
 // 11. - servicios para login
 app.use('/api/login', require('./routes/auth.routes'));
+// 15.2 
+app.use('/api/hospitals', require('./routes/hospital.routes')); // Nueva ruta para hospitales
+app.use('/api/doctors', require('./routes/doctor.routes')); // Nueva ruta para doctores
+// 15.8
+app.use('/api/search', require('./routes/search.routes')); // Endpoint de búsqueda global
+// 16.1
+app.use('/api/upload', require('./routes/upload.routes')); // Endpoint de subidas de ficheros
 
 // 2.1 Rutas
 app.get('/', (req, res) => {
