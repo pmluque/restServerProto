@@ -19,7 +19,7 @@ const Doctor = require('../models/doctor.model');
 const { v4: uuidv4 } = require('uuid'); // CommonJS
 
 // 16.6 
-const { updateImage } = require('../helpers/updateImage.helper');
+const { updateImage } = require('../helpers/update-image.helper');
 
 
 // 16
@@ -111,7 +111,7 @@ const getImagen = (req, res = response) => {
     const pathNoImg = path.join(__dirname, `../uploads/no-img.jpg`);
     const pathImg = path.join(__dirname, `../uploads/${type}/${photo}`);
 
-    console.log('upload.controller.getImagen() pathImg=', pathImg);
+    // console.log('upload.controller.getImagen() pathImg=', pathImg);
 
     if (fs.existsSync(pathImg)) {
         res.sendFile(pathImg);

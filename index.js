@@ -29,10 +29,10 @@ app.use('/api/search', require('./routes/search.routes')); // Endpoint de búsqu
 // 16.1
 app.use('/api/upload', require('./routes/upload.routes')); // Endpoint de subidas de ficheros
 
-// 2.1 Rutas
-app.get('/', (req, res) => {
-    res.status(200).json({ ok: true, msg: 'Welcome !' });
-});
+// 2.1 Rutas (18.2 = hay que anular la respuesta de bienvenida json)
+//app.get('/', (req, res) => {
+//    res.status(200).json({ ok: true, msg: 'Welcome !' });
+//});
 app.get('/error', (req, res) => {
     res.status(400).json({ ok: false, msg: 'Error !' });
 });
@@ -41,6 +41,8 @@ app.get('/api/users', (req, res) => {
     res.status(400).json({ ok: true, msg: 'Error !' });
 });
 */
+// 18.2 Directorio publico
+app.use(express.static('public'));
 
 
 // 1.4 Lanzar servidor
