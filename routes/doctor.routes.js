@@ -23,9 +23,18 @@ router.post('/', [
     validate // este validate coge el resultado de todos los check y detiene el proceso si no cumplen las reglas.
 ], createDoctor);
 
-router.put('/:id', [], updateDoctor);
+router.put('/:id', [
+    validateJWT,
+    check('name', 'El nombre del médico es obligatorio').not().isEmpty(),
+    check('hospital', 'El ID de hospital debe ser válido').isMongoId(),
+    validate // este validate coge el resultado de todos los check y detiene el proceso si no cumplen las reglas.
+], updateDoctor);
 
-router.delete('/:id', [], deleteDoctor);
+router.delete('/:id', [
+    validateJWT
+], deleteDoctor);
+
+router.use('/api/v1', router);
 
 module.exports = router;
 

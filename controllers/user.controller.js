@@ -1,3 +1,6 @@
+// ... http status codes ... 
+const httpStatus = require('http-status-codes');
+
 // Importar objetos para tener información acerca de ellos
 const { response } = require('express');
 // const { validationResult } = require('express-validator'); // 8.7 : capturadores de errores || 8.8 movido al middleware
@@ -14,8 +17,11 @@ const getUsers = async(req, res = response) => {
     try {
         // 15.7 - PAGINACIÓN: recoger parámetros de la url from/to
         // http://localhost:3000/api/users?from=5&to=10
-        const from = Number(req.query.from) | 0;
-        console.log('user.controller.getUsers() from=', from);
+        // http://localhost:3000/api/users?from=5&limit=10
+        const from = Number(req.query.from) || 0;
+        const limit = Number(req.query.limit) || 5;
+
+        //console.log('user.controller.getUsers() from=', from);
 
         // lanzar 2 procesos de forma simultánea > Promise.all([ejecuta todas estas promesas])
         /*
@@ -27,10 +33,11 @@ const getUsers = async(req, res = response) => {
         const [users, total] = await Promise.all([
             User.find({}, 'name email role google img')
             .skip(from)
-            .limit(5), User.countDocuments()
+            .limit(limit), User.countDocuments()
         ]);
 
-        res.status(200).json({
+        res.status(httpStatus.StatusCodes.OK); // 200
+        res.json({
             ok: true,
             msg: 'Resultado de la búsqueda de usuarios',
             data: {
@@ -42,14 +49,40 @@ const getUsers = async(req, res = response) => {
 
     } catch (error) {
 
-        res.status(500).json({
+        res.status(httpStatus.StatusCodes.INTERNAL_SERVER_ERROR);
+        res.json({
             ok: false,
             msg: 'Error inesperado al buscar usuarios',
             err: error
         });
     }
+}
 
+const getUserById = async(req, res = response) => {
 
+    const uid = req.query.id;
+    try {
+
+        const user = await Promise.all([
+            User.findOne({ uid }, 'name email role google img')
+        ]);
+
+        res.status(httpStatus.StatusCodes.OK); // 200
+        res.json({
+            ok: true,
+            msg: 'Resultado de datos del usuario',
+            data: user
+        });
+
+    } catch (error) {
+
+        res.status(httpStatus.StatusCodes.INTERNAL_SERVER_ERROR);
+        res.json({
+            ok: false,
+            msg: `Error inesperado al buscar el usuario uid=${uid}`,
+            err: error
+        });
+    }
 }
 
 /**
@@ -153,12 +186,12 @@ const updateUser = async(req, res = response) => {
         // delete fields.google;
 
         // Escribir en base de datos (es una promesa de moogose)
-        const userUpdated = await User.findByIdAndUpdate(uid, fields, { new: true, useFindAndModify: false }); // new:true para que regrese el actualizado
+        const userUPT = await User.findByIdAndUpdate(uid, fields, { new: true, useFindAndModify: false }); // new:true para que regrese el actualizado
         // llamada
         res.status(200).json({
             ok: true,
             msg: 'Usuario actualizado!',
-            data: { userUpdated }
+            data: { 'old': userDB, 'new': userUPT }
         });
 
 
@@ -208,4 +241,4 @@ const deleteUser = async(req, res = response) => {
     }
 }
 
-module.exports = { getUsers, createUser, updateUser, deleteUser }
+module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser }

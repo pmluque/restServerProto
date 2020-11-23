@@ -32,9 +32,16 @@ router.post('/', [
     validate // este validate coge el resultado de todos los check y detiene el proceso si no cumplen las reglas.
 ], createHospital);
 
-router.put('/:id', [], updateHospital);
 
-router.delete('/:id', [], deleteHospital);
+router.put('/:id', [
+    validateJWT,
+    check('name', 'El nombre del hospital es obligatorio').not().isEmpty(),
+    validate // este validate coge el resultado de todos los check y detiene el proceso si no cumplen las reglas.
+], updateHospital);
+
+router.delete('/:id', [validateJWT], deleteHospital);
+
+router.use('/api/v1', router);
 
 module.exports = router;
 

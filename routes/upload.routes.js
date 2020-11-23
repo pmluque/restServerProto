@@ -25,5 +25,7 @@ router.put('/:type/:id', [validateJWT], fileUpload);
 // Mostrar la imagen a la entidad
 router.get('/:type/:photo', [validateJWT], getImagen);
 
+router.use('/api/v1', router);
+
 module.exports = router;
 // SIGUIENTE PASO: Crear controlador

@@ -6,7 +6,7 @@ const { check } = require('express-validator'); // 8.7
 const { validate } = require('../middleware/validate'); // 8.8
 //
 // Cargar mis controladores para asociarlos a la ruta
-const { getUsers, createUser, updateUser, deleteUser } = require('../controllers/user.controller');
+const { getUsers, getUserById, createUser, updateUser, deleteUser } = require('../controllers/user.controller');
 // 14.1 - leer token de los headers
 const { validateJWT } = require('../middleware/validate-jwt');
 //
@@ -24,6 +24,7 @@ const router = Router();
 // 14.1 - Invocar al middleware de validación antes de seguir con la consulta de negocio
 //        Para las pruebas usar en Headers -> key: x-token | value: 123456 => luego poner uno válido
 router.get('/', validateJWT, getUsers);
+router.get('/:id', [validateJWT], getUserById);
 
 router.post('/', [
     check('name', 'Nombre es obligatorio').not().isEmpty(),
@@ -43,5 +44,7 @@ router.put('/:id', [
 
 // 14.2 - añadir validación de token
 router.delete('/:id', [validateJWT], deleteUser);
+
+router.use('/api/v1', router);
 
 module.exports = router;

@@ -16,5 +16,7 @@ router.get('/:pattern', [validateJWT], getAllEntities);
 // 15.9
 router.get('/:table/:pattern', [validateJWT], getAllCollections);
 
+router.use('/api/v1', router);
+
 module.exports = router;
 // SIGUIENTE PASO: Crear controlador

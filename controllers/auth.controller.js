@@ -114,4 +114,33 @@ const loginGoogle = async(req, res = response) => {
     }
 }
 
-module.exports = { login, loginGoogle }
+
+const renewToken = async(req, res = response) => {
+
+    const uid = req.uid;
+
+    try {
+
+        // Generar un token : importar función del helpers
+        const token = await generateJWT(uid);
+
+        // Respuesta correcta
+        res.status(200).json({
+            ok: true,
+            msg: 'Login google autorizado',
+            data: { uid }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado',
+            err: {
+                'default': error
+            }
+        });
+    }
+}
+
+
+module.exports = { login, loginGoogle, renewToken }

@@ -1,0 +1,164 @@
+openapi: 3.0.0
+info:
+    title: API Service Control
+    description: Service Control v.8 - Catálogo de servicios RESTful
+    version: 1.0.0
+    termsOfService: http://localhost:3000/terms.html
+    contact:
+        name: ServiceControl API Team
+        email: servicesupport@sia.es   
+        url: http://localhost:3000/
+    license:
+        name: Apache 2.0
+        url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+    - url: http://localhost:3000/api
+      description: Development Server
+components:
+    schemas:
+    parameters:
+    responses:
+    securitySchemes:
+       
+paths:
+  /users:
+    get:
+      summary: list users of api
+      description: 
+        returns a list of all the users
+      operationId: "getUsers"        
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: OK
+      parameters:
+        - in: query
+          name: from
+          schema:
+            type: integer
+            minimum: 0
+            default: 0             
+          description: Desde qué registro mostrar 
+          default: 0 
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            maximum: 50
+            default: 5 
+          description: Cantidad de registros de la página
+          example: 10
+        - in: header
+          name: x-token
+          schema:
+            type: string
+          required: true                            
+    post:
+      summary: "Add a new user to the User"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Data that needs to be added to the Users"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        200:
+          description: OK
+        405:
+          description: "Invalid input"
+
+  /users/{uid}:
+    get:
+      summary: "Find user by ID"
+      description: "Returns a api user"
+      operationId: "getUserById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "uid"
+        in: "path"
+        description: "ID of user to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "User not found"
+    put:
+      summary: "Update an existing contact"
+      description: ""
+      operationId: "updateUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "UID of user to update"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "User object that needs to be added to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Contact not found"
+        405:
+          description: "Validation exception"
+    delete:
+      summary: "Deletes a user"
+      description: ""
+      operationId: "deleteUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of user to be deleted"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "User not found"
+          
+definitions:
+  User:
+    type: "object"
+    required:
+    - "name"
+    - "email"
+    - "password"
+    properties:
+      name:
+        type: "string"
+        example: "John"
+      email:
+        type: "string"
+      password:
+        type: "string"    
+      img:
+        type: "string"               
+      role:
+        type: "string"
+        enum:
+        - "USER_ROLE"
+        - "ADMIN_ROLE"
+      google:
+        type: "boolean"             

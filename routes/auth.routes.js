@@ -3,8 +3,11 @@
 //
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { login, loginGoogle } = require('../controllers/auth.controller');
+const { login, loginGoogle, renewToken } = require('../controllers/auth.controller');
 const { validate } = require('../middleware/validate');
+// 20
+const { validateJWT } = require('../middleware/validate-jwt');
+
 const router = Router();
 
 router.post('/', [
@@ -14,8 +17,14 @@ router.post('/', [
 ], login);
 
 router.post('/google', [
-    check('id_token', 'Token Google es obligatoria').not().isEmpty(),
+    check('id_token', 'Token Google es obligatorio').not().isEmpty(),
     validate
 ], loginGoogle);
+
+router.get('/renew', [
+    validateJWT
+], renewToken);
+
+router.use('/api/v1', router);
 
 module.exports = router;

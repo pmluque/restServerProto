@@ -1,5 +1,21 @@
 require('dotenv').config(); // 4.2 - Cargar propiedades de configuración
 const express = require('express'); // 1
+// -------------------------------------------
+// OAS - Open API Services v. 3.0.0
+// https://swagger.io/specification/
+// Documentación de servicios
+// 1. npm install swagger-ui-express --save
+// const swaggerUi = require('swagger-ui-express'),
+//    swaggerDocument = require('./docs/openapi.json');
+// 1. Leer yaml
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./docs/openapi.yaml');
+//const swaggerJsDoc = require('swagger-jsdoc');
+
+// 2. npm install --save swagger-jsdoc-express
+// const swaggerJSDocExpress = require('swagger-jsdoc-express');
+
 // const bodyParser = require('body-parser'); // 8.4  || esto produjo errores en los métodos !!!! -- regreso a express
 const cors = require('cors'); // 5.1
 const { dbConnection } = require('./database/config'); // 3.5 | Las llaves es por la desestructuración por si me quiero traer más de un objeto del fichero
@@ -44,6 +60,7 @@ app.get('/api/users', (req, res) => {
 // 18.2 Directorio publico
 app.use(express.static('public'));
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // 1.4 Lanzar servidor
 app.listen(process.env.PORT, () => {
